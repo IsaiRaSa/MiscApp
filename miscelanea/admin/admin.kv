@@ -1,0 +1,892 @@
+#:import hex kivy.utils.get_color_from_hex
+
+<ColoredLabel@Label>:
+	canvas.before:
+		Color:
+			rgba: hex('#393939')
+		Rectangle:
+			size: self.size
+			pos: self.pos
+
+<ColoredButton@Button>:
+	background_normal: ''
+	background_color: hex('#393939')
+
+<DeleteItemPopup>:
+	size_hint: .5, .5
+    auto_dismiss: False
+    title: ''
+    BoxLayout:
+    	orientation: 'vertical'
+    	padding: 1
+    	Label:
+    		text: 'Está seguro que quiere eliminar el artículo:'
+    	BoxLayout:
+    		BoxLayout:
+    			orientation: 'vertical'
+	    		ColoredLabel:
+	    			text: 'Código:'
+		    	Label:
+		    		id: code_delete_label
+    		BoxLayout:
+    			orientation: 'vertical'
+		    	ColoredLabel:
+		    		text: 'Nombre:'
+		    	Label:
+		    		id: name_delete_label
+	    BoxLayout:
+    		BoxLayout:
+    			orientation: 'vertical'
+		    	ColoredLabel: 
+		    		text: 'Cantidad:'
+		    	Label:
+		    		id: qty_delete_label
+    		BoxLayout:
+    			orientation: 'vertical'
+		    	ColoredLabel:
+		    		text: 'Precio:'
+		    	Label:
+		    		id: price_delete_label
+	    BoxLayout:
+	    	Button:
+	    		text: 'Eliminar artículo'
+	    		on_release: root.accept_delete()
+	    	Button:
+	    		text: 'Salir sin hacer cambios'
+		        on_press: root.dismiss()
+
+<ItemPopup>:
+    size_hint: .5, .5
+    auto_dismiss: False
+    title: ''
+    BoxLayout:
+	    orientation: 'vertical'
+	    padding: .05
+	    BoxLayout:
+	    	size_hint_y: .1
+		    Label:
+		    	id: item_info_1
+		    Label:
+		    	id: item_info_2
+	    Label:
+	    	id: not_valid_notification
+	    	size_hint_y: .1
+	    BoxLayout:
+			size_hint_y: .15
+		    TextInput: 
+				id: item_code
+				size_hint_x: .7
+				multiline: False
+				hint_text: 'Código'
+				write_tab: False
+			ToggleButton:
+				id: code_toggle
+				size_hint_x: .3
+				text: 'Código necesario'
+				state: 'down'
+				on_release: self.text='Código no necesario' if self.state=='normal' else 'Código necesario'
+		TextInput: 
+			id: item_name
+			size_hint_y: .15
+			multiline: False
+			hint_text: 'Nombre'
+			write_tab: False
+		BoxLayout:
+			size_hint_y: .3
+			BoxLayout:
+				orientation: 'vertical'
+				size_hint_x: .6
+				TextInput: 
+					id: item_qty
+					size_hint_y: .15
+					multiline: False
+					hint_text: 'Cantidad'
+					write_tab: False
+				TextInput: 
+					id: item_price
+					size_hint_y:.15
+					multiline: False
+					hint_text: 'Precio'
+					write_tab: False
+			BoxLayout:
+				orientation: 'vertical'
+				size_hint_x: .4
+				BoxLayout:
+					size_hint_y:.15
+					ToggleButton:
+						id: weight_toggle
+						group: 'sell_type'
+						text: 'Por Peso'
+						on_release: 
+							choice_label.text='Precio Por Kilo'
+							item_qty.hint_text='Cantidad en kilos'
+					ToggleButton:
+						id: item_toggle
+						group: 'sell_type'
+						text: 'Por Artículo'
+						on_release: 
+							choice_label.text='Precio Por Artículo'
+							item_qty.hint_text='Cantidad de artículos'
+				BoxLayout:
+					size_hint_y:.15
+					Label:
+						id: choice_label
+		BoxLayout:
+			size_hint_y: .2
+		    Button:
+		    	id: item_button
+		    	text: 'Aceptar'
+		    	on_release: root.verify_item(item_code.text,code_toggle.state,item_name.text,item_price.text,item_qty.text,weight_toggle.state, item_toggle.state)
+		    Button:
+		        text: 'Salir sin hacer cambios'
+		        on_press: root.dismiss()
+
+<DeleteUserPopup>:
+	size_hint: .6, .6
+    auto_dismiss: False
+    title: ''
+    BoxLayout:
+    	orientation: 'vertical'
+    	padding: 1
+    	Label:
+    		text: 'Está seguro que quiere eliminar el usuario:'
+		BoxLayout:
+			orientation: 'vertical'
+    		ColoredLabel:
+    			text: 'Nombre:'
+	    	Label:
+	    		id: name_delete_label
+	    BoxLayout:
+    		BoxLayout:
+    			orientation: 'vertical'
+		    	ColoredLabel:
+		    		text: 'Nombre de usuario:'
+		    	Label:
+		    		id: username_delete_label
+    		BoxLayout:
+    			orientation: 'vertical'
+		    	ColoredLabel: 
+		    		text: 'Tipo:'
+		    	Label:
+		    		id: type_delete_label
+	    BoxLayout:
+	    	Button:
+	    		text: 'Eliminar Usuario'
+	    		on_release: root.accept_delete()
+	    	Button:
+	    		text: 'Salir sin hacer cambios'
+		        on_press: root.dismiss()
+
+<UserPopup>:
+    size_hint: .5, .5
+    auto_dismiss: False
+    title: ''
+    BoxLayout:
+	    orientation: 'vertical'
+	    padding: .05
+	    BoxLayout:
+	    	size_hint_y: .1
+		    Label:
+		    	id: user_info_1
+		    Label:
+		    	id: user_info_2
+	    Label:
+	    	id: not_valid_notification
+	    	size_hint_y: .1
+	    TextInput: 
+			id: user_name
+			size_hint_y: .15
+			multiline: False
+			hint_text: 'Nombre'
+			write_tab: False
+		TextInput: 
+			id: user_username
+			size_hint_y: .15
+			multiline: False
+			hint_text: 'Nombre de usuario'
+			write_tab: False
+		TextInput: 
+			id: user_password
+			size_hint_y: .15
+			multiline: False
+			hint_text: 'Contraseña'
+			write_tab: False
+		BoxLayout:
+			size_hint_y: .2 
+			id: user_type
+			Label:
+				text: 'Tipo de Usuario:'
+			ToggleButton:
+				id: admin_option
+				text: 'Administrador'
+				group: 'user_work_type'
+			ToggleButton:
+				id: worker_option
+				text: 'Trabajador'
+				group: 'user_work_type'
+		BoxLayout:
+			size_hint_y: .2
+		    Button:
+		    	id: item_button
+		    	text: 'Aceptar'
+		    	on_release: root.verify_user(user_name.text,user_username.text,user_password.text,admin_option.state,worker_option.state)
+		    Button:
+		        text: 'Salir sin hacer cambios'
+		        on_press: root.dismiss()
+
+<SaleDataItemPopup>:
+    size_hint: .5, .5
+    title: 'Información de venta seleccionada:'
+    BoxLayout:
+    	orientation: 'vertical'
+	    padding: .05
+	    BoxLayout:
+    		size_hint_y: .1
+	    	ColoredLabel:
+	    		text: '#'
+	    		size_hint_x: .05
+	    	ColoredLabel:
+	    		text: 'Código'
+	    		size_hint_x: .25
+	    	ColoredLabel:
+	    		text: 'Nombre'
+	    		size_hint_x: .25
+	    	ColoredLabel:
+	    		text: 'Cantidad'
+	    		size_hint_x: .15
+	    	ColoredLabel:
+	    		text: '$ /Artículo'
+	    		size_hint_x: .15
+	    	ColoredLabel:
+	    		text: 'Total'
+	    		size_hint_x: .15
+	    AdminRV:
+			id: sale_items_rv
+		    viewclass: 'SaleItemsLabel'
+		BoxLayout:
+    		size_hint_y: .1
+			ColoredLabel:
+				text: 'Artículo vendidos:'
+	    		size_hint_x: .25
+			ColoredLabel:
+				id: total_items
+	    		size_hint_x: .1
+			ColoredLabel:
+				text: 'Kg vendidos:'
+	    		size_hint_x: .25
+			ColoredLabel:
+				id: total_kg
+	    		size_hint_x: .1
+			ColoredLabel:
+				text: 'Total vendido: '
+	    		size_hint_x: .25
+			ColoredLabel:
+				id: total_money
+	    		size_hint_x: .1
+
+
+<CustomDropDown>:
+	canvas.before:
+		Color:
+			rgba: hex('#393939')
+		Rectangle:
+			size: self.size
+			pos: self.pos
+    Button:
+        text: 'Productos'
+        size_hint_y: None
+        height: 44
+        on_release: root.screen_chosen(self.text)
+    Button:
+        text: 'Usuarios'
+        size_hint_y: None
+        height: 44
+        on_release: root.screen_chosen(self.text)
+    Button:
+        text: 'Mas Info'
+        size_hint_y: None
+        height: 44
+        on_release: root.screen_chosen(self.text)
+
+<SaleItemsLabel>:
+    canvas.before:
+        Color:
+            rgba: hex('#F0F0F0')
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    Label:
+        id: _hashtag
+        size_hint_x: .05
+        color: (0,0,0,1)
+    Label:
+        id: _codigo
+        size_hint_x: .25
+        color: (0,0,0,1)
+    Label:
+        id: _articulo
+        size_hint_x: .25
+        color: (0,0,0,1)
+    Label:
+        id: _cantidad
+        size_hint_x: .15
+        color: (0,0,0,1)
+    Label:
+        id: _precio_por_articulo
+        size_hint_x: .15
+        color: (0,0,0,1)
+    Label:
+        id: _total
+        size_hint_x: .15
+        color: (0,0,0,1)
+
+<SelectableSaleLabel>:
+	canvas.before:
+        Color:
+            rgba: hex('#7A9B87') if self.selected else hex('#F0F0F0')
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    Label:
+        id: _hashtag
+        size_hint_x: .05
+        color: (0,0,0,1)
+    Label:
+        id: _name
+        size_hint_x: .15
+        color: (0,0,0,1)
+    Label:
+        id: _username
+        size_hint_x: .15
+        color: (0,0,0,1)
+    Label:
+        id: _cantidad
+        size_hint_x: .15
+        color: (0,0,0,1)
+    Label:
+        id: _total
+        size_hint_x: .1
+        color: (0,0,0,1)
+    Label:
+        id: _time
+        size_hint_x: .25
+        color: (0,0,0,1)
+    Label:
+        id: _date
+        size_hint_x: .15
+        color: (0,0,0,1)
+
+<SelectableUserLabel>:
+	canvas.before:
+        Color:
+            rgba: hex('#7A9B87') if self.selected else hex('#F0F0F0')
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    Label:
+        id: _hashtag
+        size_hint_x: .05
+        color: (0,0,0,1)
+    Label:
+        id: _name
+        size_hint_x: .35
+        color: (0,0,0,1)
+    Label:
+        id: _username
+        size_hint_x: .35
+        color: (0,0,0,1)
+    Label:
+        id: _type
+        size_hint_x: .25
+        color: (0,0,0,1)
+
+<SelectableItemLabel>:
+    canvas.before:
+        Color:
+            rgba: hex('#7A9B87') if self.selected else hex('#F0F0F0')
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    Label:
+        id: _hashtag
+        size_hint_x: .05
+        color: (0,0,0,1)
+    Label:
+        id: _codigo
+        size_hint_x: .35
+        color: (0,0,0,1)
+    Label:
+        id: _articulo
+        size_hint_x: .35
+        color: (0,0,0,1)
+    Label:
+        id: _cantidad
+        size_hint_x: .125
+        color: (0,0,0,1)
+    Label:
+        id: _precio
+        size_hint_x: .125
+        color: (0,0,0,1)
+
+<SigninsLabel>:
+    canvas.before:
+        Color:
+            rgba: hex('#F0F0F0')
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    Label:
+        id: _hashtag
+        size_hint_x: .05
+        color: (0,0,0,1)
+    Label:
+        id: _name
+        size_hint_x: .3
+        color: (0,0,0,1)
+    Label:
+        id: _username
+        size_hint_x: .3
+        color: (0,0,0,1)
+    Label:
+        id: _sign_in
+        size_hint_x: .125
+        color: (0,0,0,1)
+    Label:
+        id: _sign_out
+        size_hint_x: .125
+        color: (0,0,0,1)
+    Label:
+        id: _date
+        size_hint_x: .1
+        color: (0,0,0,1)
+
+<AdminRV>:
+    SelectableRecycleBoxLayout:
+        default_size: None, dp(36)
+        default_size_hint: 1, None
+        size_hint_y: None
+        height: self.minimum_height
+        orientation: 'vertical'
+        spacing: dp(2)
+        touch_multiselect: False
+        multiselect: False
+
+<ProductScreen>:
+	name: 'Productos'
+	BoxLayout:
+		BoxLayout:
+			padding: 5
+			orientation: 'vertical'
+			BoxLayout:
+				id: item_label_bar
+				size_hint_y: .05
+				spacing: .5
+				ColoredLabel:
+					id: item_number
+					text: '#'
+					size_hint_x: .05
+				ColoredButton: 
+					id: code
+					text: 'Código  de Artículo'
+					size_hint_x: .35
+					on_release: root.order_by("code")
+				ColoredButton: 
+					id: item_info
+					text: 'Artículo'
+					size_hint_x: .35
+					on_release: root.order_by("name")
+				ColoredButton: 
+					id: item_quantity
+					text: 'Cantidad'
+					size_hint_x: .125
+					on_release: root.order_by("qty")
+				ColoredButton: 
+					id: item_prices
+					text: 'Precio'
+					size_hint_x: .125
+					on_release: root.order_by("price")
+
+			AdminRV:
+				id: item_rv
+				size_hint_y: .89
+			    viewclass: 'SelectableItemLabel'
+			BoxLayout:
+				id: item_search_bar
+				size_hint_y: .06
+				TextInput:
+					id: search_by_code
+					multiline: False
+					hint_text: 'Buscar por codigo'
+					write_tab: False
+					on_text_validate: root.search_by_code()
+				TextInput:
+					id: search_by_name
+					multiline: False
+					hint_text: 'Buscar por nombre'
+					write_tab: False
+					on_text_validate: root.search_by_name()
+
+		BoxLayout:
+			spacing: .5
+			size_hint_x:.2
+			orientation: 'vertical'
+			padding: .5
+			canvas.before:
+				Color:
+					rgba: hex('#F0F0F0')
+				Rectangle:
+					size: self.size
+					pos: self.pos
+			ColoredButton:
+				text: 'Agregar Producto'
+				on_release: root.add_item_button(root.add_item)
+			ColoredButton:
+				text: 'Modificar Producto'
+				on_release: root.modify_item_button(root.modify_item)
+			ColoredButton:
+				text: 'Eliminar Producto'
+				on_release: root.delete_item_button(root.delete_item)
+			ColoredButton:
+				text: 'Mas Información'
+				on_release: root.item_information()
+			ColoredButton:
+				text: 'Test Button'
+
+<UserScreen>:
+	name: 'Usuarios'
+	BoxLayout:
+		BoxLayout:
+			padding: 5
+			orientation: 'vertical'
+			BoxLayout:
+				id: user_label_bar
+				size_hint_y: .05
+				spacing: .5
+				ColoredLabel:
+					id: user_number
+					text: '#'
+					size_hint_x: .05
+				ColoredLabel: 
+					id: user_name
+					text: 'Nombre'
+					size_hint_x: .35
+				ColoredLabel: 
+					id: user_username
+					text: 'Nombre de Usuario'
+					size_hint_x: .35
+				ColoredLabel: 
+					id: user_type
+					text: 'Tipo'
+					size_hint_x: .25
+
+			AdminRV:
+				id: user_rv
+			    viewclass: 'SelectableUserLabel'
+
+		BoxLayout:
+			spacing: .5
+			size_hint_x:.2
+			orientation: 'vertical'
+			padding: .5
+			canvas.before:
+				Color:
+					rgba: hex('#F0F0F0')
+				Rectangle:
+					size: self.size
+					pos: self.pos
+			ColoredButton:
+				text: 'Agregar Usuario'
+				on_release: root.add_user_button(root.add_user)
+			ColoredButton:
+				text: 'Modificar Usuario'
+				on_release: root.modify_user_button(root.modify_user)
+			ColoredButton:
+				text: 'Eliminar Usuario'
+				on_release: root.delete_user_button(root.delete_user)
+			ColoredButton:
+				text: 'Mas Información'
+				on_release: root.user_information()
+			ColoredButton:
+				text: 'Test Button'
+				on_release: root.test()
+
+<MoreInfoScreen>:
+	name: 'Mas Info'
+	BoxLayout:
+		orientation: 'vertical'
+		BoxLayout:
+			size_hint_y: .1
+			spacing: .5
+			padding: .5
+			ColoredLabel:
+				text: 'Escoge datos que quieras observar'
+		Label: 
+			text: ''
+		BoxLayout:
+			size_hint_y: .1
+			spacing: .5
+			padding: .5
+			ColoredButton:
+				text: 'Datos de Ingreso de Usuario'
+				on_release: root.switch_screen(self.text)
+			ColoredButton:
+				text: 'Datos de Ventas'
+				on_release: root.switch_screen(self.text)
+			ColoredButton:
+				text: 'Test'
+
+<SigninData>:
+	name: 'Sign in Data'
+	BoxLayout:
+		orientation: 'vertical'
+		BoxLayout:
+			size_hint_y: .1
+			spacing: .5
+			padding: .5
+			ColoredLabel:
+				text: 'Datos de Ingresos de Cuentas Usuarios'
+			ColoredLabel:
+				size_hint_x: .1
+				text: 'Viendo: '
+			ColoredLabel:
+				id: date_id
+				size_hint_x: .2
+				text: 'Hoy'
+		BoxLayout:
+			size_hint_y: .1
+			spacing: .5
+			padding: .5
+			ColoredLabel:
+				text: '#'
+				size_hint_x: .05
+			ColoredLabel:
+				text: 'Nombre Usuario'
+				size_hint_x: .3
+			ColoredLabel:
+				text: 'Nombre de Cuenta'
+				size_hint_x: .3
+			ColoredLabel:
+				text: 'Inició sesión'
+				size_hint_x: .125
+			ColoredLabel:
+				text: 'Cerró sesión'
+				size_hint_x: .125
+			ColoredLabel:
+				text: 'Fecha'
+				size_hint_x: .1
+		AdminRV:
+			id: sign_ins_rv
+			viewclass: 'SigninsLabel'
+		BoxLayout:
+			size_hint_y: .07
+			spacing: .5
+			padding: .5
+			ColoredLabel:
+				text: 'Fecha específica:'
+			TextInput:
+				id: single_date
+				multiline: False
+				hint_text: 'dd/mm/aa'
+				write_tab: False
+				on_text_validate: root.load_signins(None,'Date')
+			ColoredLabel:
+				text: 'Rango de fechas:'
+			TextInput:
+				id: initial_date
+				multiline: False
+				hint_text: 'dd/mm/aa'
+				write_tab: False
+				on_text_validate: root.load_signins(None,'Range')
+			ColoredLabel:
+				text: '-'
+				size_hint_x: .06
+			TextInput:
+				id: last_date
+				multiline: False
+				hint_text: 'dd/mm/aa'
+				write_tab: False
+				on_text_validate: root.load_signins(None,'Range')
+			ColoredButton:
+				text: 'Hoy'
+				on_release: root.load_signins(None,'Default')
+		BoxLayout:
+			size_hint_y: .1
+			spacing: .5
+			padding: .5
+			ColoredButton:
+				text: 'Datos de Ingreso de Usuario'
+				on_release: root.switch_screen(self.text)
+			ColoredButton:
+				text: 'Datos de Ventas'
+				on_release: root.switch_screen(self.text)
+			ColoredButton:
+				text: 'Test'
+
+<SaleData>:
+	name: 'Sale Data'
+	BoxLayout:
+		orientation: 'vertical'
+		BoxLayout:
+			size_hint_y: .1
+			spacing: .5
+			padding: .5
+			ColoredLabel:
+				text: 'Datos de Ventas'
+				size_hint_x: .4
+			ColoredLabel:
+				text: 'Viendo: '
+				size_hint_x: .1
+			ColoredLabel:
+				id: date_id
+				size_hint_x: .2
+				text: 'Hoy'
+			ColoredLabel:
+				text: 'Total: '
+				size_hint_x: .1
+			ColoredLabel:
+				id: final_sum
+				size_hint_x: .2
+		BoxLayout:
+			size_hint_y: .1
+			spacing: .5
+			padding: .5
+			ColoredLabel:
+				text: '#'
+				size_hint_x: .05
+			ColoredLabel:
+				text: 'Nombre Usuario'
+				size_hint_x: .15
+			ColoredLabel:
+				text: 'Nombre de Cuenta'
+				size_hint_x: .15
+			ColoredLabel:
+				text: 'Productos Vendidos'
+				size_hint_x: .15
+			ColoredLabel:
+				text: 'Total'
+				size_hint_x: .1
+			ColoredLabel:
+				text: 'Hora'
+				size_hint_x: .25
+			ColoredLabel:
+				text: 'Fecha'
+				size_hint_x: .15
+		AdminRV:
+			id: sales_rv
+			viewclass: 'SelectableSaleLabel'
+		BoxLayout:
+			size_hint_y: .07
+			spacing: .5
+			padding: .5
+			ColoredLabel:
+				text: 'Fecha específica:'
+			TextInput:
+				id: single_date
+				multiline: False
+				hint_text: 'dd/mm/aa'
+				write_tab: False
+				on_text_validate: root.load_sales(None,'Date')
+			ColoredLabel:
+				text: 'Rango de fechas:'
+			TextInput:
+				id: initial_date
+				multiline: False
+				hint_text: 'dd/mm/aa'
+				write_tab: False
+				on_text_validate: root.load_sales(None,'Range')
+			ColoredLabel:
+				text: '-'
+				size_hint_x: .06
+			TextInput:
+				id: last_date
+				multiline: False
+				hint_text: 'dd/mm/aa'
+				write_tab: False
+				on_text_validate: root.load_sales(None,'Range')
+			ColoredButton:
+				text: 'Hoy'
+				on_release: root.load_sales(None,'Default')
+			ColoredButton:
+				text: 'Mas Info'
+				on_release: root.more_info()
+		BoxLayout:
+			size_hint_y: .1
+			spacing: .5
+			padding: .5
+			ColoredButton:
+				text: 'Datos de Ingreso de Usuario'
+				on_release: root.switch_screen(self.text)
+			ColoredButton:
+				text: 'Datos de Ventas'
+				on_release: root.switch_screen(self.text)
+			ColoredButton:
+				text: 'Test'
+
+<AdminWindow>:
+	id: main_win
+	orientation: 'vertical'
+	canvas.before:
+		Color:
+			rgba: hex('#EEF5EF')
+		Rectangle:
+			size: self.size
+			pos: self.pos
+
+	BoxLayout:
+		orientation: 'vertical'
+		size_hint_y: .1
+		canvas.before:
+			Color:
+				rgba: hex('#68A780')
+			Rectangle:
+				size: self.size
+				pos: self.pos
+		BoxLayout:
+			padding: .1
+			spacing: .2
+			ColoredButton:
+				id: drop_down_button
+				size_hint_x: .2
+				text: 'Cambiar Vista'
+				on_press: root.send_callback(root.switch_screen)
+			Label:
+				id: show_user
+				size_hint_x: .2
+				color: hex('#000000')
+			Label:
+				size_hint_x: .2
+			Label:
+				id: notification
+				size_hint_x: .2
+			ColoredButton:
+				id: root.to_sale()
+				size_hint_x: .2
+				text: 'Ir a Venta'
+				on_release: root.to_sale()
+			ColoredButton:
+				id: signout_button
+				size_hint_x: .2
+				text: 'Salir de Cuenta'
+				on_release: root.signout()
+
+	ScreenManager:
+        id: scrn_mngr
+		ProductScreen:	
+			id: product_screen
+		UserScreen:
+			id: user_screen
+		MoreInfoScreen:
+			id: more_info_screen
+		SigninData:
+			id: signin_data
+		SaleData:
+			id: sale_data
+
+    BoxLayout:
+    	size_hint_y:.05
+    	canvas.before:
+			Color:
+				rgba: hex('#68A780')
+			Rectangle:
+				size: self.size
+				pos: self.pos

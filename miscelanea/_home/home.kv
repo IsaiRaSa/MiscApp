@@ -1,0 +1,536 @@
+#:import hex kivy.utils.get_color_from_hex
+
+<GreyButton@Button>:
+	background_normal: ''
+	background_color: hex('#393939')
+
+<ColoredLabel@Label>:
+	canvas.before:
+		Color:
+			rgba: hex('#393939')
+		Rectangle:
+			size: self.size
+			pos: self.pos
+
+<CancelPurchasePopup>:
+    size_hint: .3, .3
+    title: 'Cancelar Compra'
+    BoxLayout:
+    	orientation: 'vertical'
+    	Label:
+    		text: '¿Está seguro que quiere cancelar su compra?'
+    	BoxLayout:
+    		Button:
+    			text: 'Sí'
+    			on_release: root.accept()
+    		Button:
+    			text: 'No'
+    			on_release: root.dismiss()
+
+
+<SelectableByNameLabel>:
+    canvas.before:
+        Color:
+            rgba: hex('#7A9B87') if self.selected else hex('#393939')
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    Label:
+    	id: _codigo
+    	size_hint_x: .25
+    Label:
+        id: _articulo
+        size_hint_x: .5
+    Label:
+        id: _cantidad
+        size_hint_x: .1
+    Label:
+        id: _precio
+        size_hint_x: .15
+
+
+<ProductInfoPopup>:
+    size_hint: .5, .5
+    title: 'Información de Producto'
+    BoxLayout:
+    	orientation: 'vertical'
+    	Label:
+    		id: notify
+    		size_hint_y: .1
+    	BoxLayout:
+    		size_hint_y: .1
+    		Label:
+    			text: 'Buscar por Código'
+    		Label:
+    			text: 'Buscar por Nombre'
+    	BoxLayout:
+    		size_hint_y: .15
+    		TextInput:
+    			id: by_code
+    			multiline: False
+    			on_text_validate: root.item_lookup_code()
+    		TextInput:
+    			id: by_name
+    			multiline: False
+    			on_text_validate: root.item_lookup_name()
+    	GridLayout:
+    		size_hint_y: .25
+    		cols: 2
+    		spacing: .5
+    		ColoredLabel:
+    			text: 'Nombre'
+    		ColoredLabel:
+    			text: 'Código'
+    		Label:
+    			id: name
+    		Label:
+    			id: code
+    	GridLayout:
+    		size_hint_y: .25
+    		cols: 2
+    		spacing: .5
+    		ColoredLabel:
+    			text: 'Precio'
+    		ColoredLabel:
+    			text: 'Cantidad'
+    		Label:
+    			id: price
+    		Label:
+    			id: qty
+    	Button:
+    		size_hint_y: .15
+    		text: 'Salir'
+    		on_release: root.dismiss()
+
+
+<ChangeQuantityPopup>:
+    size_hint: .5, .5
+    auto_dismiss: False
+    title: 'Cambiar Cantidad'
+    BoxLayout:
+	    orientation: 'vertical'
+	    BoxLayout:
+		    Label:
+		    	id: new_qty_info_1
+		    Label:
+		    	id: new_qty_info_2
+	    Label:
+	    	id: not_valid_notification
+	    TextInput: 
+			id: new_qty_text
+			multiline: False
+			hint_text: 'Nueva Cantidad'
+	    	on_text_validate: root.validate_text_input(new_qty_text.text)
+	    Button:
+	    	id: new_qty_button
+	    	text: 'Aceptar'
+	    	on_press: root.validate_text_input(new_qty_text.text)
+	    Button:
+	        text: 'Salir sin hacer cambios'
+	        on_press: root.dismiss()
+
+<SelectableLabel>:
+    canvas.before:
+        Color:
+            rgba: hex('#7A9B87') if self.selected else hex('#F0F0F0')
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    Label:
+        id: _hashtag
+        size_hint_x: .1
+        color: (0,0,0,1)
+    Label:
+        id: _articulo
+        size_hint_x: .5
+        color: (0,0,0,1)
+    Label:
+        id: _cantidad
+        size_hint_x: .1
+        color: (0,0,0,1)
+    Label:
+        id: _precio_por_articulo
+        size_hint_x: .15
+        color: (0,0,0,1)
+    Label:
+        id: _precio
+        size_hint_x: .15
+        color: (0,0,0,1)
+
+<RV>:
+    SelectableRecycleBoxLayout:
+        default_size: None, dp(36)
+        default_size_hint: 1, None
+        size_hint_y: None
+        height: self.minimum_height
+        orientation: 'vertical'
+        spacing: dp(2)
+        touch_multiselect: False
+        multiselect: False
+
+
+<ProductByNamePopup>:
+    size_hint: .5, .55
+    title: 'Productos'
+    BoxLayout:
+    	orientation: 'vertical'
+    	BoxLayout:
+    		orientation: 'vertical'
+    		size_hint_y:.65
+    		BoxLayout:
+    			size_hint_y:.1
+	    		Label:
+	    			text: 'Código'
+			    	size_hint_x: .25
+			    Label:
+	    			text: 'Nombre'
+			        size_hint_x: .5
+			    Label:
+	    			text: 'Cantidad'
+			        size_hint_x: .1
+			    Label:
+	    			text: 'Precio'
+			        size_hint_x: .15
+		    RV:
+	    		id: rvs
+		    	viewclass: 'SelectableByNameLabel'
+		BoxLayout:
+			size_hint_y:.15
+			Label:
+				id: notification
+				size_hint_x:.7
+			TextInput:
+				id: qty_input
+				size_hint_x:.3
+    			hint_text: 'Cantidad'
+				multiline: False
+				on_text_validate: root.select_item()
+	    BoxLayout:
+	    	size_hint_y:.2
+	    	Button:
+	    		text: 'Seleccionar'
+	    		on_release: root.select_item()
+	    	Button:
+	    		text: 'Salir'
+	    		on_release: root.dismiss()
+
+
+<PayPopup>:
+	size_hint: .4, .5
+    title: 'Productos'
+    BoxLayout:
+    	orientation: 'vertical'
+    	spacing: .5
+    	padding: .5
+    	BoxLayout:
+    		size_hint_y: .25
+    		Label:
+    			size_hint_x: .4
+    			text: 'Total a Pagar: '
+    		Label:
+    			size_hint_x: .1
+    			text: '$'
+	    	Label:
+	    		id: total
+	    		size_hint_x: .5
+    	BoxLayout:
+    		size_hint_y: .25
+	    	Label:
+	    		size_hint_x: .4
+				text: 'Recibido:'
+    		Label:
+    			size_hint_x: .1
+    			text: '$'
+    		BoxLayout:
+    			size_hint_x: .5
+    			orientation: 'vertical'
+	    		TextInput:
+	    			id: received
+	    			hint_text: 'Escriba cantidad recibida'
+					multiline: False
+	    			on_text_validate: root.show_change()
+	    		Button:
+	    			text: 'Aceptar'
+	    			on_release: root.show_change()
+    	BoxLayout:
+    		size_hint_y: .25
+	    	Label:
+	    		size_hint_x: .4
+				text: 'Cambio:'
+    		Label:
+    			size_hint_x: .1
+    			text: '$'
+    		Label:
+    			id: change
+    			size_hint_x: .5
+    	BoxLayout:
+    		size_hint_y: .25
+    		Button:
+    			id: pay_button
+    			disabled: True
+    			text: 'Terminar Pago'
+    			on_release: root.accept_pay()
+    		Button:
+    			text: 'Cancelar'
+    			on_release: root.dismiss()
+
+
+
+<HomeWindow>:
+	id: main_win
+	orientation: 'vertical'
+	canvas.before:
+		Color:
+			rgba: hex('#68A780')
+		Rectangle:
+			size: self.size
+			pos: self.pos
+
+	BoxLayout:
+		id: header
+		orientation: 'vertical'
+		size_hint_y: .1
+		canvas.before:
+			Color:
+				rgba: hex('#68A780')
+			Rectangle:
+				size: self.size
+				pos: self.pos
+
+		BoxLayout:
+			id: header_1
+			spacing: .5
+			size_hint_y: .6
+			Label:
+				id: show_user
+				padding: (10,20)
+				size_hint_x: .4
+				color: hex('#000000')
+			BoxLayout:
+				size_hint_x: .1
+				BoxLayout:
+					size_hint_x: .5
+					orientation:'vertical'
+					Label:
+						text: 'Fecha: '
+						color: hex('#000000')
+					Label:
+						text: 'Hora: '
+						color: hex('#000000')
+				BoxLayout:
+					size_hint_x: .5
+					orientation:'vertical'
+					Label:
+						id: date
+						text: 'Date/Time'
+						color: hex('#000000')
+					Label:
+						id: time
+						color: hex('#000000')
+			Label:
+				size_hint_x: .3
+			GreyButton:
+				id: to_admin
+				size_hint_x: .1
+				text: 'Admin'
+				on_release: root.to_admin()
+			GreyButton:
+				id: logout
+				padding: (10,20)
+				size_hint_x: .1
+				text: 'signout'
+				on_release: root.signout()
+
+	BoxLayout:
+		id: body
+		size_hint_y: .85
+		padding: .5
+		spacing: .5
+		canvas.before:
+			Color:
+				rgba: hex('#EEF5EF')
+			Rectangle:
+				size: self.size
+				pos: self.pos
+
+		BoxLayout:
+			id: list
+			orientation: 'vertical'
+			size_hint_x: .7
+			canvas.before:
+				Color:
+					rgba: hex('#EEF5EF')
+				Rectangle:
+					size: self.size
+					pos: self.pos
+
+			BoxLayout:
+				id: label_and_search
+				orientation: 'vertical'
+				size_hint_y: .1
+				padding: .5
+				spacing: .5
+				BoxLayout:
+					spacing: .5
+					ColoredLabel:
+						text: 'Buscar por Código: '
+					ColoredLabel:
+						text: 'Buscar por Nombre: '
+				BoxLayout:
+					id: search_product
+					spacing: .5
+					TextInput: 
+						id: by_code
+						multiline: False
+						disabled: True
+						on_text_validate: root.add_product_by_code()
+					TextInput:
+						id: by_name
+						multiline: False
+						disabled: True
+						on_text_validate: root.add_product_by_name()
+
+			BoxLayout:
+				id: products_shown
+				size_hint_y: .8
+				padding: 5
+				orientation: 'vertical'
+				BoxLayout:
+					id: item_label_bar
+					size_hint_y: .05
+					spacing: .5
+					ColoredLabel:
+						id: item_number
+						text: '#'
+						size_hint_x: .1
+					ColoredLabel: 
+						id: item_info
+						text: 'Artículo'
+						size_hint_x: .5
+					ColoredLabel: 
+						id: item_quantity
+						text: 'Cantidad'
+						size_hint_x: .1
+					ColoredLabel: 
+						id: price_per_item
+						text: 'Precio por Artículo'
+						size_hint_x: .15
+					ColoredLabel: 
+						id: item_prices
+						text: 'Precio'
+						size_hint_x: .15
+
+				RV:
+					id: rvs
+					viewclass: 'SelectableLabel'
+
+			BoxLayout:
+				id: product_options
+				size_hint_y: .1
+				spacing: .5
+				GreyButton:
+					id: delete_item
+					text: 'Borrar Artículo'
+					on_release: root.remove_product()
+				GreyButton:
+					id: apply_discount
+					text: 'Info de Producto'
+					on_release: root.product_info()
+				GreyButton:
+					id: change_quantity
+					text: 'Cambiar Cantidad'
+					on_release: root.change_item_quantity(root.update_qty)
+			
+
+		BoxLayout:
+			id: total
+			size_hint_x: .3
+			orientation: 'vertical'
+			canvas.before:
+				Color:
+					rgba: hex('#C1C5C2')
+				Rectangle:
+					size: self.size
+					pos: self.pos
+
+			BoxLayout:
+				id: total_shown
+				size_hint_y: .4
+				canvas.before:
+					Color:
+						rgba: hex('#000000')
+					Rectangle:
+						size: self.size
+						pos: self.pos
+				BoxLayout:
+					id: total_shown_labels
+					size_hint_x: .3
+					orientation: 'vertical'
+					Label:
+						size_hint_y: .4
+						text: 'Sub-Total'
+					Label:
+						size_hint_y: .6
+						text: 'Total'
+				BoxLayout:
+					id: total_shown_modify
+					size_hint_x: .7
+					orientation: 'vertical'
+					Label:
+						id: mod_subtotal
+						size_hint_y: .4
+						text: '0.00'
+					Label:
+						id: mod_total
+						size_hint_y: .6
+						text: '0.00'
+
+			BoxLayout:
+				id: total_options
+				size_hint_y: .6
+				orientation: 'vertical'
+				padding: 1
+				spacing: 1
+				Label:
+					id: purchase_failure
+					size_hint_y: .15
+					color: (1,.2,.2,1)
+				Label:
+					id: purchase_success
+					size_hint_y:.15
+					color: (0,0,0,1)
+					bold: True
+					font_size: '15sp'
+				GreyButton:
+					id: pay
+					size_hint_y: .25
+					text: 'Pagar'
+					disabled: True
+					on_release: root.pay()
+				GreyButton:
+					id: finalize_purchase
+					size_hint_y: .25
+					disabled: True
+					text: 'Finalizar Compra'
+					on_release: root.finalize_purchase()
+				BoxLayout:
+					size_hint_y:.2
+					spacing: 1
+					GreyButton:
+						id: new_purchase
+						text: 'Nueva Compra'
+						on_release: root.new_purchase()
+					GreyButton:
+						id: cancel_purchase
+						text: 'Cancelar Compra'
+						disabled: True
+						on_release: root.cancel_purchase(False)
+	BoxLayout:
+		id: body
+		size_hint_y: .05
+		canvas.before:
+			Color:
+				rgba: hex('#68A780')
+			Rectangle:
+				size: self.size
+				pos: self.pos
